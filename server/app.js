@@ -3,6 +3,7 @@ const express = require('express')
 const db = require('./config/db')
 const cors = require("cors")
 const bookRoutes = require("./routes/books")
+const usersRoutes = require("./routes/users")
 const bodyParser = require("body-parser")
 
 const PORT = process.env.PORT
@@ -15,6 +16,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use("/books", bookRoutes)
+app.use("/users", usersRoutes)
 
 db()
 
