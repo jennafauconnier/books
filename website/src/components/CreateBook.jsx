@@ -13,16 +13,38 @@ const CreateBook = (props) => {
     description: "",
     published_date: "",
     publisher: "",
+    style: "",
+    image: "",
   });
 
   const onChange = (e) => {
-    setBook({ ...book, [e.target.name]: e.target.value });
-  };
+    if (e.target.name === "image") {
+      setBook({ ...book, image: e.target.files[0] });
+    } else {
+      setBook({ ...book, [e.target.name]: e.target.value });
+    }
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("image", book.image)
+    formData.append("title", book.title)
+    formData.append("isbn", book.isbn)
+    formData.append("author", book.author)
+    formData.append("description", book.description)
+    formData.append("published_date", book.published_date)
+    formData.append("publisher", book.publisher)
+    formData.append("style", book.style)
+
+    console.log('FORM DATA', formData.get("image"))
+
     axios
-      .post("http://localhost:8082/books", book)
+      .post("http://localhost:8082/books", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((res) => {
         setBook({
           title: "",
@@ -31,14 +53,15 @@ const CreateBook = (props) => {
           description: "",
           published_date: "",
           publisher: "",
-        });
-        // Push to /
-        navigate("/");
+          style: "",
+          image: "null",
+        })
+        navigate("/")
       })
       .catch((err) => {
-        console.log("Error in CreateBook!");
-      });
-  };
+        console.log("Error in CreateBook!")
+      })
+  }
 
   return (
     <div className="CreateBook">
@@ -116,6 +139,24 @@ const CreateBook = (props) => {
                   name="publisher"
                   className="form-control"
                   value={book.publisher}
+                  onChange={onChange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Style of the book"
+                  name="style"
+                  className="form-control"
+                  value={book.style}
+                  onChange={onChange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="file"
+                  name="image"
+                  className="form-control"
                   onChange={onChange}
                 />
               </div>
