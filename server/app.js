@@ -5,8 +5,15 @@ const cors = require("cors")
 const bookRoutes = require("./routes/books")
 const usersRoutes = require("./routes/users")
 const bodyParser = require("body-parser")
+const admin = require('firebase-admin')
+const serviceAccount = require('./config/firebase-conf.json')
 
 const PORT = process.env.PORT
+
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+})
 
 const app = express()
 
