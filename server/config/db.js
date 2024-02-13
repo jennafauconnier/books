@@ -1,13 +1,11 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 
-const db = `mongodb+srv://jennafauconnier:${process.env.DB_PASSWORD}@cluster-book.tecaruz.mongodb.net/?retryWrites=true&w=majority`
-
 mongoose.set("strictQuery", true, "useNewUrlParser", true)
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(db)
+    await mongoose.connect(process.env.DB_URL)
     console.log("Connected to DB ⚙️")
   } catch (err) {
     console.error(err.message)
