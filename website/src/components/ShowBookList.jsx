@@ -35,7 +35,7 @@ function ShowBookList() {
           <div className='col-md-11'>
             <Link
               to='/create-book'
-              className='btn btn-outline-warning float-right'
+              className='btn btn-outline float-right btn-add'
             >
               + Add New Book
             </Link>
