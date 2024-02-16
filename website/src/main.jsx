@@ -1,25 +1,29 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { Provider } from 'react-redux';
+import store from './services/redux/store';
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor } from './services/redux/persistor'
+
+
+import { BrowserRouter as Router } from 'react-router-dom'
 import './index.css'
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.bundle.min"
 
-import CreateBook from "./components/CreateBook"
-import ShowBookList from "./components/ShowBookList"
-import ShowBookDetails from "./components/ShowBookDetails"
-import UpdateBookInfo from "./components/UpdateBookInfo"
+import App from './App';
 
-const router = createBrowserRouter([
-  { path: "/", element: <ShowBookList /> },
-  { path: "/create-book", element: <CreateBook /> },
-  { path: "/show-book/:id", element: <ShowBookDetails /> },
-  { path: "/edit-book/:id", element: <UpdateBookInfo /> },
-])
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <Router>
+            <App />
+          </Router>
+        </PersistGate>
+      </Provider>
   </React.StrictMode>,
 )

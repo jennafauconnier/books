@@ -4,7 +4,7 @@
 }
 
 .CreateBook {
-  background-color: #2c3e50;
+  background-color: #A59E8C;
   border: 0;
   padding: 0;
   margin: 0;
@@ -27,7 +27,7 @@
 }
 
 .ShowBookDetails {
-  background-color: #2c3e50;
+  background-color: #A59E8C;
   border: 0;
   padding: 0;
   margin: 0;
@@ -39,7 +39,7 @@
 }
 
 .UpdateBookInfo {
-  background-color: #2c3e50;
+  background-color: #A59E8C;
   border: 0;
   padding: 0;
   margin: 0;
@@ -58,7 +58,7 @@
 }
 
 .ShowBookList {
-  background-color: #2c3e50;
+  background-color: #A59E8C;
   color: white;
   border: 0;
   padding: 0;
@@ -71,7 +71,7 @@
 
 @media (max-width: 768px) {
   .ShowBookList {
-    background-color: #2c3e50;
+    background-color: #A59E8C;
     height: 100%;
   }
 }
@@ -120,4 +120,8 @@
   color: #6c757d;
   font-size: 1em;
   padding: 10px 0 10px 0;
+}
+
+.btn-add {
+  border-color: #4C5760;
 }
