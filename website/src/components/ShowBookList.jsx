@@ -1,11 +1,23 @@
 import { useState, useEffect } from 'react';
 import '../App.css';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import BookCard from './BookCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { authSliceActions } from '../services/redux/authReducer';
+
 
 function ShowBookList() {
   const [books, setBooks] = useState([]);
+  const token = useSelector(state => state.auth);
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+
+  const logout = async () => {
+    dispatch(authSliceActions.logout({}))
+    navigate('/signup')
+  }
 
   useEffect(() => {
     axios
@@ -25,6 +37,7 @@ function ShowBookList() {
 
   return (
     <div className='ShowBookList'>
+      <button onClick={logout}>Se deconnecter</button>
       <div className='container'>
         <div className='row'>
           <div className='col-md-12'>
@@ -47,6 +60,7 @@ function ShowBookList() {
 
         <div className='list'>{bookList}</div>
       </div>
+      
     </div>
   );
 }

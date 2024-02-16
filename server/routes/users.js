@@ -7,7 +7,6 @@ const authMiddleware = require('../middleware/auth.middleware')
 
 
 router.get('/', authMiddleware, async (req, res) => {
-  console.log('ID', req.user )
     try {
       const user = await User.findById(req.user.id).select('-password');
       res.status(200).json({ user });
@@ -16,8 +15,9 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/signup', async (req, res) => {
     const { email, password } = req.body
+
 
     try {
       user = await User.findOne({ email })
@@ -34,30 +34,27 @@ router.post('/', async (req, res) => {
       user.password = await bcrypt.hash(password, salt)
       await user.save()
 
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      }
 
-      jwt.sign(
-        payload,
+      const token = jwt.sign(
+        {
+          user: { 
+            email: user.email, 
+            id: user.id, 
+            date: user.date 
+          },
+        },
         process.env.JWT_SECRET,
-        { expiresIn: '7 days' },
-        (err, token) => {
-          if (err) throw err
-          res.json({ token })
-        }
-      )
-    //   res.send({ user: token })
+        { expiresIn: '3 hours' },
+      );
+      res.status(200).send({ token, user });
     } catch (err) {
-      console.error(err.message)
+      console.error('Err', err)
       res.status(500).send('Server error')
     }
   }
 )
 
-router.post('/signin', authMiddleware, async (req, res) => {
+router.post('/signin', async (req, res) => {
     const { email, password } = req.body
 
     try {
@@ -71,23 +68,18 @@ router.post('/signin', authMiddleware, async (req, res) => {
         return res.status(400).json({ msg: 'Email or password incorrect' })
       }
 
-      const payload = {
-        user: {
-          id: user.id,
+      const token = jwt.sign(
+        {
+          user: { 
+            email: user.email, 
+            id: user.id, 
+            date: user.date 
+          },
         },
-      }
-
-      console.log('payload', payload)
-
-      jwt.sign(
-        payload,
         process.env.JWT_SECRET,
-        { expiresIn: '30 days' },
-        (err, token) => {
-          if (err) throw err
-          res.json({ token })
-        }
-      )
+        { expiresIn: '3 hours' },
+      );
+      res.status(200).send({ token, user });
     } catch (err) {
       console.error(err.message)
       res.status(500).send('Server error')
