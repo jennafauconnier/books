@@ -17,7 +17,6 @@ const slice = createSlice({
       }
     },
     signup: (state, action) => {
-      console.log('action user', action)
       return {
         ...state,
         user: action.payload.user,

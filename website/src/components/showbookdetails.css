@@ -1,0 +1,13 @@
+.container-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px
+}
