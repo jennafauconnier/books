@@ -17,15 +17,14 @@ const slice = createSlice({
       }
     },
     signup: (state, action) => {
-      console.log('action user', action)
       return {
         ...state,
         user: action.payload.user,
         token: action.payload.token,
       }
     },
-    logout: ( state, action ) => INITIAL_STATE,
-    delete: () => INITIAL_STATE,
+    logout: ( state, action ) => { return {...INITIAL_STATE} },
+    delete: () => { return {...INITIAL_STATE} },
   },
 })
 

@@ -26,13 +26,11 @@ const Signup = () => {
         password: formData.password
       });
 
-      console.log('response', response)
       dispatch(authSliceActions.signup(response.data))
   
       navigate("/showbook")
     } catch (error) {
-      console.log("rr", error)
-      console.error(error);
+      console.log("Error while creating account :", error)
     }
   }
 

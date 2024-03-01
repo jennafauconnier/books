@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import '../App.css';
-import axios from 'axios';
+import './showbooklist.css';
 import { Link, useNavigate } from 'react-router-dom';
 import BookCard from './BookCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSliceActions } from '../services/redux/authReducer';
+import { Grid, Box, Button } from '@mui/material';
+import api from '../services/api'
+import { styled } from '@mui/material/styles'
+
 
 
 function ShowBookList() {
@@ -19,50 +22,77 @@ function ShowBookList() {
     navigate('/signup')
   }
 
+  const fetchBooks = async() => {
+    try {
+      const res = await api.get('/books')
+      setBooks(res.data)
+    } catch (err) {
+      console.log('An error as occured to recover books :', err)
+    }
+  }
+
   useEffect(() => {
-    axios
-      .get('http://localhost:8082/books')
-      .then((res) => {
-        setBooks(res.data);
-      })
-      .catch((err) => {
-        console.log('Error from ShowBookList');
-      });
+    fetchBooks()
+
+    if(!token) {
+      navigate('/signup')
+    }
   }, []);
 
-  const bookList =
-    books.length === 0
-      ? 'there is no book record!'
-      : books.map((book, k) => <BookCard book={book} key={k} />);
-
   return (
-    <div className='ShowBookList'>
-      <button onClick={logout}>Se deconnecter</button>
+    <Box className='container-book-list'>
       <div className='container'>
-        <div className='row'>
-          <div className='col-md-12'>
-            <br />
-            <h2 className='display-4 text-center'>Books List</h2>
-          </div>
-
-          <div className='col-md-11'>
-            <Link
-              to='/create-book'
-              className='btn btn-outline float-right btn-add'
-            >
-              + Add New Book
+        <div className='container-row'>
+            <DisconnectButton variant="contained" onClick={logout}>Se deconnecter</DisconnectButton>
+            <h2>Books List</h2>
+            <div>
+            <Link to='/create-book'>
+              <AddBookButton variant="contained">Add a book</AddBookButton>
             </Link>
-            <br />
-            <br />
-            <hr />
           </div>
         </div>
 
-        <div className='list'>{bookList}</div>
-      </div>
+          
+        <Grid
+          container 
+          spacing={3}
+        >
+          {books.length === 0
+            ? 'there is no book record!'
+            : books.map((book, k) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={k}>
+                  <BookCard
+                    test={book}
+                    id={book._id}
+                    title={book.title}
+                    author={book.author}
+                    description={book.description}
+                    image={book.image}
+                  />
+                </Grid>
+              ))}
+        </Grid>
       
-    </div>
+        </div>
+      </Box>
+    
   );
 }
+
+
+
+const AddBookButton = styled(Button)(() => ({
+  backgroundColor: '#533745',
+  '&:hover': {
+    backgroundColor: '#AB4E68',
+  },
+}))
+
+const DisconnectButton = styled(Button)(() => ({
+backgroundColor: '#9D9171',
+'&:hover': {
+  backgroundColor: '#533745',
+},
+}))
 
 export default ShowBookList;

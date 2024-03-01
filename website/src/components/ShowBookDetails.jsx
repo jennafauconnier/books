@@ -1,115 +1,127 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import '../App.css';
-import axios from 'axios';
+import { Button, Table, TableBody, TableCell, TableContainer, Paper, TableRow } from '@mui/material';
 
-function ShowBookDetails(props) {
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles'
+import api from '../services/api';
+
+import './showbookdetails.css'
+
+function ShowBookDetails() {
   const [book, setBook] = useState({});
 
   const { id } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8082/books/${id}`)
-      .then((res) => {
-        setBook(res.data);
-      })
-      .catch((err) => {
-        console.log('Error from ShowBookDetails');
-      });
-  }, [id]);
+  const fetchBook = async() => {
+    try {
+      const res = await api.get(`/books/${id}`)
+      setBook(res.data)
+    } catch (err) {
+      console.log('Error occured to recover this book.')
+    }
+  }
 
-  const onDeleteClick = (id) => {
-    axios
-      .delete(`http://localhost:8082/books/${id}`)
-      .then((res) => {
-        navigate('/');
-      })
-      .catch((err) => {
-        console.log('Error form ShowBookDetails_deleteClick');
-      });
+  const onDeleteBook = (id) => {
+    try {
+      api.delete(`books/${id}`)
+      navigate('/showbook')
+    } catch (err) {
+      console.log('Error while deleting book.')
+    }
   };
 
-  const BookItem = (
-    <div>
-      <table className='table table-hover table-dark'>
-        <tbody>
-          <tr>
-            <th scope='row'>1</th>
-            <td>Title</td>
-            <td>{book.title}</td>
-          </tr>
-          <tr>
-            <th scope='row'>2</th>
-            <td>Author</td>
-            <td>{book.author}</td>
-          </tr>
-          <tr>
-            <th scope='row'>3</th>
-            <td>ISBN</td>
-            <td>{book.isbn}</td>
-          </tr>
-          <tr>
-            <th scope='row'>4</th>
-            <td>Publisher</td>
-            <td>{book.publisher}</td>
-          </tr>
-          <tr>
-            <th scope='row'>5</th>
-            <td>Published Date</td>
-            <td>{book.published_date}</td>
-          </tr>
-          <tr>
-            <th scope='row'>6</th>
-            <td>Description</td>
-            <td>{book.description}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
+  useEffect(() => {
+    fetchBook()
+  }, []);
 
   return (
     <div className='ShowBookDetails'>
       <div className='container'>
-        <div className='row'>
-          <div className='col-md-10 m-auto'>
-            <br /> <br />
-            <Link to='/' className='btn btn-outline-warning float-left'>
-              Show Book List
+          <div className='container-row'>
+            <Link to='/showbook'>
+              <ReturnButton variant="contained">
+                Go back to Book List
+              </ReturnButton>
             </Link>
           </div>
           <br />
           <div className='col-md-8 m-auto'>
-            <h1 className='display-4 text-center'>Book's Record</h1>
-            <p className='lead text-center'>View Book's Info</p>
-            <hr /> <br />
+            <h1 className='display-4 text-center'>{book?.title}</h1>
+            <p className='lead text-center'>Book's Info</p>
           </div>
-          <div className='col-md-10 m-auto'>{BookItem}</div>
-          <div className='col-md-6 m-auto'>
-            <button
-              type='button'
-              className='btn btn-outline-danger btn-lg btn-block'
+          <TableContainer component={Paper}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell>{book.title}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Author</TableCell>
+                  <TableCell>{book.author}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>ISBN</TableCell>
+                  <TableCell>{book.isbn}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Publisher</TableCell>
+                  <TableCell>{book.publisher}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Published Date</TableCell>
+                  <TableCell>{book.published_date}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Description</TableCell>
+                  <TableCell>{book.description}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div className='button-container'>
+            <Link to={`/edit-book/${book._id}`}>
+              <EditButton>
+                Edit Book
+              </EditButton>
+            </Link>
+
+            <DeleteButton
+              variant='contained'
               onClick={() => {
-                onDeleteClick(book._id);
+                onDeleteBook(book._id);
               }}
             >
               Delete Book
-            </button>
-          </div>
-          <div className='col-md-6 m-auto'>
-            <Link
-              to={`/edit-book/${book._id}`}
-              className='btn btn-outline-info btn-lg btn-block'
-            >
-              Edit Book
-            </Link>
+            </DeleteButton>
           </div>
         </div>
       </div>
-    </div>
   );
 }
+
+const ReturnButton = styled(Button)(() => ({
+  backgroundColor: '#533745',
+  '&:hover': {
+    backgroundColor: '#AB4E68',
+  },
+}))
+
+const DeleteButton = styled(Button)(() => ({
+  backgroundColor: '#533745',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#D83B67',
+  },
+}))
+
+const EditButton = styled(Button)(() => ({
+  backgroundColor: '#B07156',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#533745',
+  },
+}))
 
 export default ShowBookDetails;
