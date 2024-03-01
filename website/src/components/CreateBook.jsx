@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+import { Button, Grid, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles'
+import './createbook.css'
 
-const CreateBook = (props) => {
-  const navigate = useNavigate();
+
+const CreateBook = () => {
+  const navigate = useNavigate()
 
   const [book, setBook] = useState({
     title: "",
@@ -25,153 +29,173 @@ const CreateBook = (props) => {
     }
   }
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("image", book.image)
-    formData.append("title", book.title)
-    formData.append("isbn", book.isbn)
-    formData.append("author", book.author)
-    formData.append("description", book.description)
-    formData.append("published_date", book.published_date)
-    formData.append("publisher", book.publisher)
-    formData.append("style", book.style)
 
-    console.log('FORM DATA', formData.get("image"))
+  const onSubmit = async (e) => {
+    e.preventDefault()
 
-    axios
-      .post("http://localhost:8082/books", formData, {
+    const formData = new FormData()
+
+    Object.entries(book).forEach(([key, value]) => {
+      formData.append(key, value)
+    })
+
+    try {
+      await api.post("http://localhost:8082/books", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then((res) => {
-        setBook({
-          title: "",
-          isbn: "",
-          author: "",
-          description: "",
-          published_date: "",
-          publisher: "",
-          style: "",
-          image: "null",
-        })
-        navigate("/")
+      setBook({
+        title: "",
+        isbn: "",
+        author: "",
+        description: "",
+        published_date: "",
+        publisher: "",
+        style: "",
+        image: "null",
       })
-      .catch((err) => {
-        console.log("Error in CreateBook!")
-      })
+      navigate('/showbook')
+    } catch (err) {
+      console.log("Error while trying to add a book", err)
+    }
   }
 
   return (
-    <div className="CreateBook">
+    <div className="create-book-container">
       <div className="container">
-        <div className="row">
-          <div className="col-md-8 m-auto">
-            <br />
-            <Link to="/" className="btn btn-outline-warning float-left">
-              Show BooK List
+        <div className='container-row'>
+            <Link to='/showbook'>
+              <ReturnButton variant="contained">
+                Go back to book list
+              </ReturnButton>
             </Link>
-          </div>
-          <div className="col-md-10 m-auto">
-            <h1 className="display-4 text-center add-book">Add Book</h1>
+        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <h1 className="display-4 text-center">Add Book</h1>
             <p className="lead text-center">Create new book</p>
             <form noValidate onSubmit={onSubmit}>
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="Title of the Book"
-                  name="title"
-                  className="form-control"
-                  value={book.title}
-                  onChange={onChange}
-                />
-              </div>
-              <br />
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="ISBN"
-                  name="isbn"
-                  className="form-control"
-                  value={book.isbn}
-                  onChange={onChange}
-                />
-              </div>
-              <br />
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="Author"
-                  name="author"
-                  className="form-control"
-                  value={book.author}
-                  onChange={onChange}
-                />
-              </div>
-              <br />
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="Describe this book"
-                  name="description"
-                  className="form-control"
-                  value={book.description}
-                  onChange={onChange}
-                />
-              </div>
-              <br />
-              <div className="form-group">
-                <input
-                  type="date"
-                  placeholder="published_date"
-                  name="published_date"
-                  className="form-control"
-                  value={book.published_date}
-                  onChange={onChange}
-                />
-              </div>
-              <br />
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="Publisher of this Book"
-                  name="publisher"
-                  className="form-control"
-                  value={book.publisher}
-                  onChange={onChange}
-                />
-              </div>
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="Style of the book"
-                  name="style"
-                  className="form-control"
-                  value={book.style}
-                  onChange={onChange}
-                />
-              </div>
-              <div className="form-group">
-                <input
-                  type="file"
-                  name="image"
-                  className="form-control"
-                  onChange={onChange}
-                />
-              </div>
-              <button
+              <InputTextfield
+                label="Title of the Book"
+                name="title"
+                value={book.title}
+                onChange={onChange}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: '10px' }}
+              />
+              <InputTextfield
+                label="ISBN"
+                name="isbn"
+                value={book.isbn}
+                onChange={onChange}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: '10px' }}
+              />
+              <InputTextfield
+                label="Author"
+                name="author"
+                value={book.author}
+                onChange={onChange}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: '10px' }}
+              />
+              <InputTextfield
+                label="Description"
+                name="description"
+                value={book.description}
+                onChange={onChange}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: '10px' }}
+              />
+              <InputTextfield
+                label="Published Date"
+                name="published_date"
+                value={book.published_date}
+                onChange={onChange}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: '10px' }}
+              />
+              <InputTextfield
+                label="Publisher of the Book"
+                name="publisher"
+                value={book.publisher}
+                onChange={onChange}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: '10px' }}
+              />
+              <InputTextfield
+                label="Style of the book"
+                name="style"
+                value={book.style}
+                onChange={onChange}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: '10px' }}
+              />
+              <InputTextfield
+              type="file"
+              name="image"
+              accept='image/*'
+              onChange={onChange}
+              fullWidth
+              sx={{ marginBottom: '10px' }}
+            />
+
+              <AddButton
                 type="submit"
-                className="btn btn-outline-warning btn-block mt-4 mb-4 w-100"
+                variant="contained"
               >
-                Submit
-              </button>
+                Add a book
+              </AddButton>
             </form>
-          </div>
-        </div>
+          </Grid>
+        </Grid>
       </div>
     </div>
   );
 };
 
 export default CreateBook;
+
+
+const ReturnButton = styled(Button)(() => ({
+  backgroundColor: '#533745',
+  '&:hover': {
+    backgroundColor: '#AB4E68',
+  },
+}))
+
+const AddButton = styled(Button)(() => ({
+  backgroundColor: '#9D9171',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#533745',
+  },
+}))
+
+const InputTextfield = styled(TextField)({
+  '& label.Mui-focused': {
+    color: '#E0E3E7',
+  },
+  '& .MuiFilledInput-root': {
+    backgroundColor: '#ffff',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#E0E3E7',
+    },
+    '&:hover fieldset': {
+      borderColor: '#E0E3E7',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#533745',
+    },
+  },
+})

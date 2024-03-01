@@ -1,5 +1,5 @@
-.ShowBookDetails {
-    background-color: #A59E8C;
+.create-book-container {
+    background-color: #B07156;
     border: 0;
     padding: 0;
     margin: 0;
@@ -8,6 +8,12 @@
     width: 100vw;
     height: 100vh;
     color: white;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    padding: 30px;
 }
 
 .container-row {
@@ -17,9 +23,10 @@
     padding-top: 30px
 }
 
-.button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 20px
+legend {
+    background-color: #533745;
+}
+
+.notranslate {
+    background-color: #533745;
 }

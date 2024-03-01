@@ -23,8 +23,8 @@ const slice = createSlice({
         token: action.payload.token,
       }
     },
-    logout: ( state, action ) => INITIAL_STATE,
-    delete: () => INITIAL_STATE,
+    logout: ( state, action ) => { return {...INITIAL_STATE} },
+    delete: () => { return {...INITIAL_STATE} },
   },
 })
 
