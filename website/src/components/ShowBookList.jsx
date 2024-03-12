@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles'
 
 function ShowBookList() {
   const [books, setBooks] = useState([]);
-  const token = useSelector(state => state.auth);
+  const token = useSelector(state => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -24,8 +24,15 @@ function ShowBookList() {
 
   const fetchBooks = async() => {
     try {
-      const res = await api.get('/books')
-      setBooks(res.data)
+      if (token && token.auth) {
+        const res = await api.get('/books', {
+          headers: {
+            Authorization: `Bearer ${token.auth.token}`
+          }
+        });
+
+        setBooks(res.data)
+      }
     } catch (err) {
       console.log('An error as occured to recover books :', err)
     }

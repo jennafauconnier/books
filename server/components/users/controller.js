@@ -1,24 +1,20 @@
 const express = require('express')
-const router = express.Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const User = require('../models/User')
-const authMiddleware = require('../middleware/auth.middleware')
+const User = require('../../models/User')
+const authMiddleware = require('../../middleware/auth.middleware')
 
-
-router.get('/', authMiddleware, async (req, res) => {
+const retrieveUser = async(req, res) => {
     try {
-      const user = await User.findById(req.user.id).select('-password');
-      res.status(200).json({ user });
+        const user = await User.findById(req.user.id).select('-password')
+        res.status(200).json({ user })
     } catch (error) {
-      res.status(500).json(error);
+        res.status(500).json(error)
     }
-})
+}
 
-router.post('/signup', async (req, res) => {
+const signup = async(req, res) => {
     const { email, password } = req.body
-
-
     try {
       user = await User.findOne({ email })
       if (user) {
@@ -45,20 +41,19 @@ router.post('/signup', async (req, res) => {
         },
         process.env.JWT_SECRET,
         { expiresIn: '3 hours' },
-      );
-      res.status(200).send({ token, user });
+      )
+
+      res.status(200).send({ token, user })
     } catch (err) {
-      console.error('Err', err)
-      res.status(500).send('Server error')
+      res.status(500).send('Error while signup')
     }
-  }
-)
+}
 
-router.post('/signin', async (req, res) => {
+const signin = async(req, res) => {
     const { email, password } = req.body
-
     try {
       let user = await User.findOne({ email })
+
       if (!user) {
         return res.status(400).json({ msg: 'Email or password incorrect' })
       }
@@ -73,18 +68,21 @@ router.post('/signin', async (req, res) => {
           user: { 
             email: user.email, 
             id: user.id, 
-            date: user.date 
+            date: user.date,
           },
         },
         process.env.JWT_SECRET,
         { expiresIn: '3 hours' },
-      );
-      res.status(200).send({ token, user });
-    } catch (err) {
-      console.error(err.message)
-      res.status(500).send('Server error')
-    }
-  }
-)
+      )
 
-module.exports = router
+      res.status(200).send({ token, user })
+    } catch (err) {
+      res.status(500).send('Server while signin')
+    }
+}
+
+module.exports = {
+    retrieveUser,
+    signup,
+    signin,
+}
