@@ -25,7 +25,6 @@ const Signin = () => {
         password: formData.password
       });
 
-      console.log('jhzefkbzjef', response)
       dispatch(authSliceActions.signin(response.data))
 
       navigate("/showbook")

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { Button, Grid, TextField } from '@mui/material';
@@ -9,6 +10,7 @@ import './createbook.css'
 
 const CreateBook = () => {
   const navigate = useNavigate()
+  const user = useSelector(state => state.auth)
 
   const [book, setBook] = useState({
     title: "",
@@ -23,9 +25,9 @@ const CreateBook = () => {
 
   const onChange = (e) => {
     if (e.target.name === "image") {
-      setBook({ ...book, image: e.target.files[0] });
+      setBook({ ...book, image: e.target.files[0] })
     } else {
-      setBook({ ...book, [e.target.name]: e.target.value });
+      setBook({ ...book, [e.target.name]: e.target.value })
     }
   }
 
@@ -34,6 +36,7 @@ const CreateBook = () => {
     e.preventDefault()
 
     const formData = new FormData()
+    formData.append('user', user.auth.user._id)
 
     Object.entries(book).forEach(([key, value]) => {
       formData.append(key, value)
